@@ -20,6 +20,12 @@ jobs:
         key: ${{ runner.os }}-venv-${{ hashFiles('**/requirements*.txt') }}
         restore-keys: |
           ${{ runner.os }}-venv-
+    - name: Install Python dependencies
+      run: |
+        test -d venv || python3 -m venv venv
+        . venv/bin/activate
+        pip install --upgrade pip
+        pip install --use-deprecated=legacy-resolver --timeout 120 --retries 5 -Ur requirements.txt
     - name: Do first-run script if necessary
       run: make .init.stamp
       if: github.repository != 'googlefonts/googlefonts-project-template'
